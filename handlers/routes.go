@@ -11,7 +11,7 @@ import (
 	"github.com/go-social/social/providers"
 )
 
-type OAuthLoginFunc func(r *http.Request, creds []social.Credentials, user *social.User, err error)
+type OAuthLoginFunc func(w http.ResponseWriter, r *http.Request, creds []social.Credentials, user *social.User, err error)
 
 func Routes(oauthLoginFn OAuthLoginFunc) http.Handler {
 	r := chi.NewRouter()

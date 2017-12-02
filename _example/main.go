@@ -8,6 +8,7 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/jwtauth"
+	"github.com/go-chi/render"
 	"github.com/go-social/social"
 	authHandlers "github.com/go-social/social/handlers"
 	"github.com/go-social/social/providers"
@@ -22,10 +23,15 @@ func main() {
 	// Configure social providers
 	pcfg := providers.ProviderConfigs{
 		"twitter": {
-			AppID:         "x",
-			AppSecret:     "y",
+			AppID:         "tAPvWw25C7iDmeubxoeIWh0NX",
+			AppSecret:     "EnSIdYXLcwZ6jGztUKZ4SMzhUCmkGXBSYYKlNo9w6zHQh8sVYe",
 			OAuthCallback: "http://localhost:1515/auth/twitter/callback",
 		},
+
+		// app_id            = "tAPvWw25C7iDmeubxoeIWh0NX"
+		// app_secret        = "EnSIdYXLcwZ6jGztUKZ4SMzhUCmkGXBSYYKlNo9w6zHQh8sVYe"
+		// oauth_callback    = "http://localhost:1515/auth/twitter/callback"
+
 		"facebook": {
 			AppID:         "x",
 			AppSecret:     "y",
@@ -54,11 +60,13 @@ func main() {
 	http.ListenAndServe(":1515", r)
 }
 
-func oauthLoginHandler(r *http.Request, creds []social.Credentials, user *social.User, err error) {
+func oauthLoginHandler(w http.ResponseWriter, r *http.Request, creds []social.Credentials, user *social.User, err error) {
 	fmt.Println("oauth login sequence complete")
 
 	if err != nil {
 		fmt.Println("error:", err)
+		render.Status(r, 401)
+		render.JSON(w, r, err)
 		return
 	}
 
@@ -71,13 +79,19 @@ func oauthLoginHandler(r *http.Request, creds []social.Credentials, user *social
 	provider, err := providers.NewSession(context.Background(), cred.ProviderID(), cred)
 	if err != nil {
 		fmt.Println("error:", err)
+		render.Status(r, 401)
+		render.JSON(w, r, err)
 		return
 	}
 
 	profile, err := provider.GetUser(providers.NoQuery)
 	if err != nil {
 		fmt.Println("error:", err)
+		render.Status(r, 401)
+		render.JSON(w, r, err)
 		return
 	}
 	fmt.Println("provider.GetUser():", profile)
+
+	render.JSON(w, r, profile)
 }
