@@ -65,32 +65,23 @@ func OAuthCallback(oauthLoginFn OAuthLoginFunc) func(w http.ResponseWriter, r *h
 		oauth := ctx.Value(ProviderOAuthCtxKey).(social.OAuth)
 
 		defer func() {
-			oauthLoginFn(r, mcreds, providerUser, err)
+			oauthLoginFn(w, r, mcreds, providerUser, err)
 		}()
 
 		mcreds, err = oauth.Exchange(ctx, r)
 		if err != nil {
-			render.Status(r, 401)
-			render.JSON(w, r, err)
 			return
 		}
 		creds := mcreds[0]
 
 		p, err := providers.NewSession(ctx, oauth.ProviderID(), creds)
 		if err != nil {
-			render.Status(r, 401)
-			render.JSON(w, r, err)
 			return
 		}
 
 		providerUser, err = p.GetUser(providers.NoQuery)
 		if err != nil {
-			render.Status(r, 401)
-			render.JSON(w, r, err)
 			return
 		}
-
-		// success
-		render.JSON(w, r, providerUser)
 	}
 }

@@ -65,7 +65,7 @@
   branch = "master"
   name = "github.com/go-social/social"
   packages = [".","handlers","providers","providers/facebook","providers/twitter"]
-  revision = "5bb4d47b8458bed458733c81dd536bb654ad87c0"
+  revision = "71bf4aa2788cb756a75992e9ccdd9c3ddec178cc"
 
 [[projects]]
   branch = "master"
@@ -89,7 +89,7 @@
   branch = "master"
   name = "golang.org/x/net"
   packages = ["context","context/ctxhttp"]
-  revision = "c7086645de248775cbf2373cf5ca4d2fa664b8c1"
+  revision = "a8b9294777976932365dabb6640cf1468d95c70f"
 
 [[projects]]
   branch = "master"
@@ -106,6 +106,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "fad1b7e6f1d33d513ea09648755fef1b7280a247f4d7c7a5d1707b3a4965486e"
+  inputs-digest = "f40dfb3325b21e9c84dae6177b68d7162c7fa972929a445a1a20f62631179043"
   solver-name = "gps-cdcl"
   solver-version = 1
