@@ -11,23 +11,24 @@ import (
 	"github.com/go-social/social/providers"
 )
 
-type OAuthLoginFunc func(w http.ResponseWriter, r *http.Request, creds []social.Credentials, user *social.User, err error)
+type ErrorHandlerFunc func(w http.ResponseWriter, r *http.Request, err error)
+type CallbackHandlerFunc func(w http.ResponseWriter, r *http.Request, creds []social.Credentials, user *social.User, err error)
 
-func Routes(oauthLoginFn OAuthLoginFunc) http.Handler {
+func Routes(oauthErrorFn ErrorHandlerFunc, oauthCallbackFn CallbackHandlerFunc) http.Handler {
 	r := chi.NewRouter()
 
 	r.Get("/", ListProviders)
 
 	r.Route("/{provider}", func(r chi.Router) {
-		r.Use(ProviderCtx)
+		r.Use(ProviderCtx(oauthErrorFn))
 
-		r.Get("/", OAuth) // open
+		r.Get("/", OAuth(oauthErrorFn)) // open
 
 		r.Group(func(r chi.Router) {
 			// secure, via jwt state token
 			r.Use(jwtauth.Verify(providers.TokenAuth, tokenFromQuery("state")))
 			r.Use(jwtauth.Authenticator)
-			r.Get("/callback", OAuthCallback(oauthLoginFn))
+			r.Get("/callback", OAuthCallback(oauthCallbackFn))
 		})
 	})
 

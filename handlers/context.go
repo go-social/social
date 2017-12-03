@@ -1,6 +1,7 @@
 package handlers
 
 var (
+	ProviderIDCtxKey    = &contextKey{"ProviderID"}
 	ProviderOAuthCtxKey = &contextKey{"ProviderOAuth"}
 )
 
