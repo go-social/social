@@ -14,6 +14,7 @@ import (
 	"github.com/go-social/social/providers"
 	_ "github.com/go-social/social/providers/facebook"
 	_ "github.com/go-social/social/providers/twitter"
+	"github.com/pkg/errors"
 )
 
 func main() {
@@ -23,15 +24,10 @@ func main() {
 	// Configure social providers
 	pcfg := providers.ProviderConfigs{
 		"twitter": {
-			AppID:         "tAPvWw25C7iDmeubxoeIWh0NX",
-			AppSecret:     "EnSIdYXLcwZ6jGztUKZ4SMzhUCmkGXBSYYKlNo9w6zHQh8sVYe",
+			AppID:         "x",
+			AppSecret:     "y",
 			OAuthCallback: "http://localhost:1515/auth/twitter/callback",
 		},
-
-		// app_id            = "tAPvWw25C7iDmeubxoeIWh0NX"
-		// app_secret        = "EnSIdYXLcwZ6jGztUKZ4SMzhUCmkGXBSYYKlNo9w6zHQh8sVYe"
-		// oauth_callback    = "http://localhost:1515/auth/twitter/callback"
-
 		"facebook": {
 			AppID:         "x",
 			AppSecret:     "y",
@@ -54,10 +50,18 @@ func main() {
 		w.Write([]byte("."))
 	})
 
-	r.Mount("/auth", authHandlers.Routes(oauthLoginHandler))
+	r.Mount("/auth", authHandlers.Routes(oauthErrorHandler, oauthLoginHandler))
 
 	// Start the server on port 0.0.0.0:1515
 	http.ListenAndServe(":1515", r)
+}
+
+func oauthErrorHandler(w http.ResponseWriter, r *http.Request, err error) {
+	if err == nil {
+		err = errors.Errorf("unknown auth error")
+	}
+	render.Status(r, 401)
+	render.JSON(w, r, err)
 }
 
 func oauthLoginHandler(w http.ResponseWriter, r *http.Request, creds []social.Credentials, user *social.User, err error) {
