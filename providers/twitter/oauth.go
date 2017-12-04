@@ -68,13 +68,16 @@ func (oa *OAuth) Exchange(ctx context.Context, r *http.Request) ([]social.Creden
 		return nil, providerError(err)
 	}
 
+	// TODO: ensure we always set CredUserID for a social cred,
+	// even if we have to make a request to get it
+
 	// NOTE: twitter does not expire oauth tokens:
 	// https://dev.twitter.com/oauth/overview/faq
 	creds := []social.Credentials{
 		&providers.OAuth1Creds{
-			AuthProviderID:        ProviderID,
-			AuthAccessToken:       access.Token,
-			AuthAccessTokenSecret: access.Secret,
+			CredProviderID:        ProviderID,
+			CredAccessToken:       access.Token,
+			CredAccessTokenSecret: access.Secret,
 		},
 	}
 	return creds, nil

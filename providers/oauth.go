@@ -18,56 +18,66 @@ func NewOAuth(providerID string) (social.OAuth, error) {
 // OAuth1Creds is a normalized social.Credentials implementation to
 // use with social providers using oauth1 (ie. twitter)
 type OAuth1Creds struct {
-	AuthProviderID        string
-	AuthAccessToken       string
-	AuthAccessTokenSecret string
-	AuthRefreshToken      string
-	AuthExpiresAt         *time.Time
-	AuthPermission        social.Permission
+	CredProviderID        string
+	CredProviderUserID    string
+	CredAccessToken       string
+	CredAccessTokenSecret string
+	CredRefreshToken      string
+	CredExpiresAt         *time.Time
+	CredPermission        social.Permission
 }
 
 var _ social.Credentials = &OAuth1Creds{}
 
 func (c *OAuth1Creds) ProviderID() string {
-	return c.AuthProviderID
+	return c.CredProviderID
+}
+
+func (c *OAuth1Creds) ProviderUserID() string {
+	return c.CredProviderUserID
 }
 
 func (c *OAuth1Creds) AccessToken() string {
-	return c.AuthAccessToken
+	return c.CredAccessToken
 }
 
 func (c *OAuth1Creds) AccessTokenSecret() string {
-	return c.AuthAccessTokenSecret
+	return c.CredAccessTokenSecret
 }
 
 func (c *OAuth1Creds) RefreshToken() string {
-	return c.AuthRefreshToken
+	return c.CredRefreshToken
 }
 
 func (c *OAuth1Creds) Permission() social.Permission {
-	return c.AuthPermission
+	return c.CredPermission
 }
 
 func (c *OAuth1Creds) SetPermission(perm string) {
-	c.AuthPermission = social.PermissionFromString(perm)
+	c.CredPermission = social.PermissionFromString(perm)
 }
 
 func (c *OAuth1Creds) ExpiresAt() *time.Time {
-	return c.AuthExpiresAt
+	return c.CredExpiresAt
 }
 
 // OAuth2Creds is a normalized social.Credentials implementation to
 // use with social providers using oauth2 (ie. facebook, google, ..)
 type OAuth2Creds struct {
 	*oauth2.Token
-	AuthProviderID string
-	AuthPermission social.Permission
+	CredProviderID     string
+	CredProviderUserID string
+	CredPermission     social.Permission
 }
 
 var _ social.Credentials = &OAuth2Creds{}
 
 func (c *OAuth2Creds) ProviderID() string {
-	return c.AuthProviderID
+	return c.CredProviderID
+}
+
+func (c *OAuth2Creds) ProviderUserID() string {
+	return c.CredProviderUserID
 }
 
 func (c *OAuth2Creds) AccessToken() string {
@@ -83,11 +93,11 @@ func (c *OAuth2Creds) RefreshToken() string {
 }
 
 func (c *OAuth2Creds) Permission() social.Permission {
-	return c.AuthPermission
+	return c.CredPermission
 }
 
 func (c *OAuth2Creds) SetPermission(perm string) {
-	c.AuthPermission = social.PermissionFromString(perm)
+	c.CredPermission = social.PermissionFromString(perm)
 }
 
 func (c *OAuth2Creds) ExpiresAt() *time.Time {

@@ -94,7 +94,7 @@ func (oa *OAuth) Exchange(ctx context.Context, r *http.Request) ([]social.Creden
 	cbErrorDesc := callbackArgs.Get("error_description")
 
 	if cbError != "" {
-		msg := fmt.Sprintf("Error:%v,  ErrorReason:%v,  ErrorDescription:%v", cbError, cbErrorMsg, cbErrorDesc)
+		msg := fmt.Sprintf("Error:%v, ErrorReason:%v, ErrorDescription:%v", cbError, cbErrorMsg, cbErrorDesc)
 		// TODO should probably use a different error code
 		return nil, providers.ErrAuthFailed.Err(errors.New(msg))
 	}
@@ -108,8 +108,14 @@ func (oa *OAuth) Exchange(ctx context.Context, r *http.Request) ([]social.Creden
 		return nil, err
 	}
 
+	// TODO: ensure we always set CredUserID for a social cred,
+	// even if we have to make a request to get it
+
 	creds := []social.Credentials{
-		&providers.OAuth2Creds{Token: userToken},
+		&providers.OAuth2Creds{
+			CredProviderID: ProviderID,
+			Token:          userToken,
+		},
 	}
 
 	client := oa.Config.Client(ctx, userToken)
@@ -138,7 +144,13 @@ func (oa *OAuth) Exchange(ctx context.Context, r *http.Request) ([]social.Creden
 			Expiry:       userToken.Expiry,
 		}
 
-		creds = append(creds, &providers.OAuth2Creds{Token: pageToken})
+		cred := &providers.OAuth2Creds{
+			CredProviderID:     ProviderID,
+			CredProviderUserID: account.ID,
+			Token:              pageToken,
+		}
+
+		creds = append(creds, cred)
 	}
 
 	return creds, nil

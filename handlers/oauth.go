@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/go-chi/chi"
@@ -14,7 +15,7 @@ import (
 func ProviderCtx(oauthErrorFn ErrorHandlerFunc) func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			providerID := chi.URLParam(r, "provider")
+			providerID := strings.ToLower(chi.URLParam(r, "provider"))
 
 			oauth, err := providers.NewOAuth(providerID)
 			if err != nil {

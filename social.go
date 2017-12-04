@@ -18,6 +18,7 @@ type OAuth interface {
 
 type Credentials interface {
 	ProviderID() string
+	ProviderUserID() string
 	AccessToken() string
 	AccessTokenSecret() string
 	RefreshToken() string
@@ -27,18 +28,19 @@ type Credentials interface {
 }
 
 type User struct {
-	Provider     string `json:"provider" url:"provider"`
-	ID           string `json:"id" url:"id"`
-	Username     string `json:"username" url:"username"`
-	Name         string `json:"name" url:"name"`
-	Email        string `json:"email" url:"email"`
-	ProfileURL   string `json:"profile_url" url:"profile_url"`
-	AvatarURL    string `json:"avatar_url" url:"avatar_url"`
-	NumPosts     int32  `json:"num_posts" url:"num_posts"`
-	NumFollowers int32  `json:"num_followers" url:"num_folowers"`
-	NumFollowing int32  `json:"num_following" url:"num_following"`
-	Lang         string `json:"lang" url:"lang"`
-	Location     string `json:"location" url:"location"`
-	Timezone     string `json:"timezone" url:"timezone"`
-	Private      bool   `json:"private" url:"private"`
+	Provider     string     `json:"provider" url:"provider"`
+	ID           string     `json:"id" url:"id"`
+	Username     string     `json:"username" url:"username"`
+	Name         string     `json:"name" url:"name"`
+	Email        string     `json:"email" url:"email"`
+	ProfileURL   string     `json:"profile_url" url:"profile_url"`
+	AvatarURL    string     `json:"avatar_url" url:"avatar_url"`
+	NumPosts     int32      `json:"num_posts" url:"num_posts"`
+	NumFollowers int32      `json:"num_followers" url:"num_folowers"`
+	NumFollowing int32      `json:"num_following" url:"num_following"`
+	Lang         string     `json:"lang" url:"lang"`
+	Location     string     `json:"location" url:"location"`
+	Timezone     string     `json:"timezone" url:"timezone"`
+	Private      bool       `json:"private" url:"private"`
+	LastSyncAt   *time.Time `json:"last_sync_at" url:"last_sync_at"`
 }
